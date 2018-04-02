@@ -45,18 +45,16 @@ while r > 1:
 		if grid[r-1][c-1] >= max(grid[r][c-1], grid[r-1][c]):
 			a = sequence[0][c-2] + a
 			b = sequence[1][r-2] + b
-			r = r - 1
-			c = c -1
+			r -= 1
+			c -= 1
 		else:
 			if grid[r-1][c] > max(grid[r-1][c-1], grid[r][c-1]):
 				a = GAP + a
-
 				b = sequence[1][r-2] + b
-				r = r - 1
+				r -= 1
 			else:
 				a = sequence[0][c-2] + a
-
 				b = GAP + b
-				c = c - 1
+				c -= 1
 
 print(a,b, sep = '\n')

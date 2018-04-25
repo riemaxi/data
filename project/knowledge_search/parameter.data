@@ -1,0 +1,10 @@
+
+# basic properties
+name = lolita
+age = 18
+sex = female
+status = married
+
+# extended propertie
+profession = developer
+citizenship = american

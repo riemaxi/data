@@ -1,7 +1,8 @@
-#1 classes
-#2 info system
-#3 features
+#1 info system
+#2 features
 
-./dmatrix.sh $1 $2 $3 | awk '{print $3}' | grep -v ^$ > $1_d
+./equivalence.sh $1 $2 > $1_$2
 
-./product.sh $1_d | ./reduct_1.py  | sort -u | ./reduct_2.py | sort -r |  ./reduct_2.py
+./dmatrix.sh $1_$2 $1 $2 | awk '{print $3}' | grep -v ^$ > $1_$2_d
+
+./product.sh $1_$2_d | ./reduct_1.py  | sort -u | ./reduct_2.py | sort -r |  ./reduct_2.py

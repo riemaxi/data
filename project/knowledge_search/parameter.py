@@ -1,17 +1,21 @@
 from collections import namedtuple
 import sys
 
+# constant
+SEP = '='
+COMMENT = '#'
+PATH = 'parameter.data'
+
+DEFAULT_PARAMETER_CLASS = 'DefaultParameter'
+
+# function
 def readarg(i, dv = ''):
 	try:
 		return sys.argv[i]
 	except:
 		return dv
 
-def load():
-	path = readarg(1,'parameter.data')
-	sep = readarg(2, '=')
-	comment = readarg(3,'#')
-
+def load(sep = SEP, comment = COMMENT, 	path = readarg(1, PATH)):
 	setting = {}
 	with open(path) as f:
 		for pair in f.read().split('\n'):
@@ -22,10 +26,10 @@ def load():
 
 	return ','.join(setting.keys()), setting
 
-
+# definition and instantiation
 fields, setting = load()
 
-DefaultParameter = namedtuple('DefaultParameter',fields)
+DefaultParameter = namedtuple( DEFAULT_PARAMETER_CLASS,fields )
 
 class Parameter(DefaultParameter):
 	def __new__(self, setting):

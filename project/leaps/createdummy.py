@@ -22,11 +22,11 @@ def create_entity():
 	with open(ENTITY, 'w') as f:
 		for id in range(FIRST_ID,SIZE - 5):
 			t = datetime.now().microsecond
-			f.write('{}\t{}\t{}\n'.format(id,t,TYPE.format(id)))
+			f.write('{}\t{}\t{}\t{}\n'.format(id,0,t,TYPE.format(id)))
 
 		for id in range(SIZE-5, SIZE):
 			t = datetime.now().microsecond
-			f.write('{}\t{}\t{}\n'.format(id,t,REGION.format(id)))
+			f.write('{}\t{}\t{}\t{}\n'.format(id,1,t,REGION.format(id)))
 
 def create_property():
 	with open(PROPERTY,'w') as f:

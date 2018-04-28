@@ -19,9 +19,10 @@ def createmask(lst):
 
 	return sorted(list(mask))
 
-mask = createmask(readarg(1).split(','))
+sep = sys.argv[1]
+mask = createmask(readarg(2).split(','))
 
 for line in sys.stdin:
-	row = line.strip().split('\t')
+	row = line.strip().split(sep)
 
 	print('\t'.join([row[i] for i in mask]))

@@ -14,16 +14,15 @@ def upper(m,c):
 def lower(m,c):
 	return m & c if m <= c else set()
 
+def boundary(m,c):
+	return upper(m,c) ^ lower(m,c)
+
 concept = load_concept( open(sys.argv[1]), sys.argv[2], sys.argv[3].split(',') )
 
-uppers = set()
-lowers = set()
 for line in sys.stdin:
 	data = line.strip().split('\t')
 
 	m = set([int(s) for s in data[2].split(',')])
-	lowers = lowers | lower(m, concept)
-	uppers = uppers | upper(m, concept)
-
-
-print( *sorted(list(uppers - lowers)), sep = '\n' )
+	s = boundary(m,concept)	
+	if s:
+		print(*list(s), sep='\n')

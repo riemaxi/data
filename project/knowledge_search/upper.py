@@ -9,7 +9,8 @@ def load_concept(f,sep, criteria):
 	return set(l)
 
 def intersect(m,c):
-	return set([int(i) for i in m]) & c
+	m =  set([int(i) for i in m])
+	return m & c
 
 concept = load_concept( open(sys.argv[1]), sys.argv[2], sys.argv[3].split(',') )
 

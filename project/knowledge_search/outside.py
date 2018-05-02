@@ -8,23 +8,15 @@ def load_concept(f,sep, criteria):
 
 	return set(l)
 
-def subset(m,c):
-	s = set([int(i) for i in m])
-	if s <= c:
-		return s
-	else:
-		return None
+def difference(m,u):
+	return u - set([int(i) for i in m])
 
-classes = sys.argv[1]
-sep =  sys.argv[2]
-criteria =  sys.argv[3].split(',')
-
-concept = load_concept( open(classes),sep,criteria )
+universe = load_concept( open(sys.argv[1]), sys.argv[2], sys.argv[3].split(',') )
 
 for line in sys.stdin:
 	data = line.strip().split('\t')
 
-	s = subset(data[2].split(','), concept)
+	s = difference(data[2].split(','), universe)
 	if s:
 		print( *list(s), sep='\n')
 

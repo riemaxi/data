@@ -1,0 +1,1 @@
+cl /DNDEBUG /EHsc /MD /Ox /wd4355 -I"%GECODEDIR%include" -I"..\include" -Foshell.obj -Tpshell.cpp /link /LIBPATH:"%GECODEDIR%lib"

@@ -1,4 +1,6 @@
-size: 13
+size: 23
 solutions: 0
 timeout: 60000
 mode: 3
+break: 1
+print: 0

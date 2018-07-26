@@ -48,7 +48,17 @@ void matrix(Parameter p){
 	opt.time(p.i("timeout"));
 	opt.size(p.i("size"));
 
-	Script::run<MatrixModel,DFS,SizeOptions>(opt);
+	if (p.i("print"))
+		if (p.b("break"))
+			Script::run<SBMatrixPrinterModel,DFS,SizeOptions>(opt);
+		else
+			Script::run<MatrixPrinterModel,DFS,SizeOptions>(opt);
+	else
+		if (p.b("break"))
+			Script::run<SBMatrixModel,DFS,SizeOptions>(opt);
+		else
+			Script::run<MatrixModel,DFS,SizeOptions>(opt);
+	
 };
 
 

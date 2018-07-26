@@ -95,41 +95,26 @@ protected:
  IntVarArray x;
  
 public:
-  MatrixModel(const SizeOptions& opt):Script(opt),x(*this, opt.size() * opt.size(), 0, 1){
+  MatrixModel(const SizeOptions& opt):Script(opt),
+	x(*this, opt.size() * opt.size(), 0, 1){
 	const int size = opt.size();
 	
-  Matrix<IntVarArgs> m(x, size, size);
-
-  for(int p=0; p<size-1; p++){
-   IntVarArgs piv = m.row(p);
-
-   //Only one 1 in the row
-   linear(*this, piv, IRT_EQ, 1);
-
-   for(int r=p+1; r<size; r++){
-    IntVarArgs row = m.row(r);
-
-    //Only one 1 in the row
-    linear(*this, row, IRT_EQ, 1);
-
-    //position in piv between 0 and 2^(size-1)
-    IntVar pp(*this,0,1 << (size-1));
-
-    //position in pr between 0 and 2^(size-1)
-    IntVar pr(*this,0,1 << (size-1));
-
-    //avoid the right triangle
-    IntVar diff = expr(*this, abs(pp - pr) );
-    rel(*this, expr(*this, diff != 0 && diff != r-p), IRT_EQ, 1);
-
-    //it must exist a 1 at pp in piv
-    element(*this, piv, pp, 1);
-    //it must exist a 1 at pr in row
-    element(*this, row, pr, 1);
-
-   }
-  }
-  branch(*this, x, INT_VAR_NONE(), INT_VAL_MIN());
+	//Constraint 1 per row and 1 per column
+	Matrix<IntVarArgs> m(x, size, size);
+	for(int i=0; i < size; i++){
+		linear(*this, m.row(i), IRT_EQ, 1);
+		linear(*this, m.col(i), IRT_EQ, 1);
+	}
+	
+	for(int ra=0; ra<size; ra++)
+		for(int rb=(ra+1)%size; ra!=rb; rb=(rb+1)%size)
+			for(int ca=0; ca<size; ca++)
+				for(int cb=(ca+1)%size; ca!=cb; cb=(cb+1)%size)
+					if ( abs(ra-rb) == abs(ca-cb) )
+						rel(*this, m(ra,ca) + m(rb,cb) < 2);
+				
+			
+	branch(*this, x, INT_VAR_NONE(), INT_VAL_MIN());
 	
   }
  
@@ -144,5 +129,173 @@ public:
   IntVarArray solution(){
 	   return x;
    }
+};
+
+class SBMatrixModel : public Script{
+protected:
+ IntVarArray x;
+ 
+public:
+  SBMatrixModel(const SizeOptions& opt):Script(opt),
+	x(*this, opt.size() * opt.size(), 0, 1){
+	const int size = opt.size();
+	
+	//Constraint 1 per row and 1 per column
+	Matrix<IntVarArgs> m(x, size, size);
+	for(int i=0; i < size; i++){
+		linear(*this, m.row(i), IRT_EQ, 1);
+		linear(*this, m.col(i), IRT_EQ, 1);
+	}
+	
+	//Right triangles
+	for(int ra=0; ra<size; ra++)
+		for(int rb=(ra+1)%size; ra!=rb; rb=(rb+1)%size)
+			for(int ca=0; ca<size; ca++)
+				for(int cb=(ca+1)%size; ca!=cb; cb=(cb+1)%size)
+					if ( abs(ra-rb) == abs(ca-cb) )
+						rel(*this, m(ra,ca) + m(rb,cb) < 2);
+				
+	//Symmetry breaking
+	IntVarArgs rows;
+	IntVarArgs cols;
+	for(int i=0; i<size;i++){
+		rows << m.row(i);
+		cols << m.col(i);
+	}
+	
+	Symmetries sym;
+	sym << VariableSequenceSymmetry(rows, size) << VariableSequenceSymmetry(cols, size);
+			
+			
+	branch(*this, x, INT_VAR_NONE(), INT_VAL_MIN(), sym);
+	
+  }
+ 
+  SBMatrixModel(SBMatrixModel& m):Script(m){
+	  x.update(*this, m.x);
+  }
+  
+  virtual Space* copy(void){
+	  return new SBMatrixModel(*this);
+  }
+  
+  IntVarArray solution(){
+	   return x;
+   }
+};
+
+
+class MatrixPrinterModel : public Script{
+protected:
+ IntVarArray x;
+ 
+public:
+  MatrixPrinterModel(const SizeOptions& opt):Script(opt),
+	x(*this, opt.size() * opt.size(), 0, 1){
+	const int size = opt.size();
+	
+	//Constraint 1 per row and 1 per column
+	Matrix<IntVarArgs> m(x, size, size);
+	for(int i=0; i < size; i++){
+		linear(*this, m.row(i), IRT_EQ, 1);
+		linear(*this, m.col(i), IRT_EQ, 1);
+	}
+	
+	//Avoid right triangles
+	for(int ra=0; ra<size; ra++)
+		for(int rb=(ra+1)%size; ra!=rb; rb=(rb+1)%size)
+			for(int ca=0; ca<size; ca++)
+				for(int cb=(ca+1)%size; ca!=cb; cb=(cb+1)%size)
+					if ( abs(ra-rb) == abs(ca-cb) )
+						rel(*this, m(ra,ca) + m(rb,cb) < 2);
+					
+			
+	branch(*this, x, INT_VAR_NONE(), INT_VAL_MIN() );
+	
+  }
+ 
+  MatrixPrinterModel(MatrixPrinterModel& m):Script(m){
+	  x.update(*this, m.x);
+  }
+  
+  virtual Space* copy(void){
+	  return new MatrixPrinterModel(*this);
+  }
+   
+	virtual void print(std::ostream& os) const { 
+		os << "=======================" << std::endl;
+		
+		int size = sqrt(x.size());
+		for(int i=0; i<size;i++){
+			os << x[size*i];
+			for(int j=1; j<size; j++)
+				os << ' ' << x[size*i + j];
+			os << std::endl;
+		}
+	}
+	
+};
+
+
+class SBMatrixPrinterModel : public Script{
+protected:
+ IntVarArray x;
+ 
+public:
+  SBMatrixPrinterModel(const SizeOptions& opt):Script(opt),
+	x(*this, opt.size() * opt.size(), 0, 1){
+	const int size = opt.size();
+	
+	//Constraint 1 per row and 1 per column
+	Matrix<IntVarArgs> m(x, size, size);
+	for(int i=0; i < size; i++){
+		linear(*this, m.row(i), IRT_EQ, 1);
+		linear(*this, m.col(i), IRT_EQ, 1);
+	}
+
+	//Avoid right triangles
+	for(int ra=0; ra<size; ra++)
+		for(int rb=(ra+1)%size; ra!=rb; rb=(rb+1)%size)
+			for(int ca=0; ca<size; ca++)
+				for(int cb=(ca+1)%size; ca!=cb; cb=(cb+1)%size)
+					if ( abs(ra-rb) == abs(ca-cb) )
+						rel(*this, m(ra,ca) + m(rb,cb) < 2);
+					
+			
+	//Symmetry breaking
+	IntVarArgs rows;
+	IntVarArgs cols;
+	for(int i=0; i<size;i++){
+		rows << m.row(i);
+		cols << m.col(i);
+	}
+	
+	Symmetries sym;
+	sym << VariableSequenceSymmetry(rows, size) << VariableSequenceSymmetry(cols, size);
+			
+			
+	branch(*this, x, INT_VAR_NONE(), INT_VAL_MIN(), sym);
+
+  }
+ 
+  SBMatrixPrinterModel(SBMatrixPrinterModel& m):Script(m){
+	  x.update(*this, m.x);
+  }
+  
+  virtual Space* copy(void){
+	  return new SBMatrixPrinterModel(*this);
+  }
+   
+	virtual void print(std::ostream& os) const { 
+		os << "=======================" << std::endl;
+		
+		int size = sqrt(x.size());
+		for(int i=0; i<size;i++){
+			os << x[size*i];
+			for(int j=1; j<size; j++)
+				os << ' ' << x[size*i + j];
+			os << std::endl;
+		}
+	}
 	
 };

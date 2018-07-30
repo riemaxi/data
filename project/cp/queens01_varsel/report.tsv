@@ -1,0 +1,68 @@
+none      	8     	300       	0.0
+none      	13    	561362    	10.0
+none      	18    	2590272   	60.0
+none      	23    	1614084   	60.0
+none      	28    	1287642   	60.0
+none      	33    	855875    	60.0
+none      	38    	601246    	60.0
+none      	43    	499562    	60.0
+none      	48    	397292    	60.0
+none      	53    	327685    	60.0
+none      	58    	138040    	60.0
+none      	63    	107639    	60.0
+none      	68    	69805     	60.0
+none      	73    	41236     	61.0
+none      	78    	26494     	61.0
+none      	83    	12627     	61.0
+none      	88    	5781      	62.0
+random    	8     	631       	0.0
+random    	13    	1904029   	35.0
+random    	18    	2310953   	60.0
+random    	23    	1699551   	60.0
+random    	28    	1200232   	60.0
+random    	33    	1012717   	60.0
+random    	38    	779559    	60.0
+random    	43    	650928    	60.0
+random    	48    	524308    	60.0
+random    	53    	408977    	60.0
+random    	58    	286978    	60.0
+random    	63    	188626    	60.0
+random    	68    	127266    	60.0
+random    	73    	41289     	61.0
+random    	78    	0         	63.0
+random    	83    	0         	63.0
+random    	88    	0         	63.0
+min min   	8     	300       	0.0
+min min   	13    	561362    	12.0
+min min   	18    	2170560   	60.0
+min min   	23    	1414344   	60.0
+min min   	28    	1315199   	60.0
+min min   	33    	888991    	60.0
+min min   	38    	615166    	60.0
+min min   	43    	514896    	60.0
+min min   	48    	415298    	60.0
+min min   	53    	363527    	60.0
+min min   	58    	120855    	60.0
+min min   	63    	93597     	60.0
+min min   	68    	69602     	60.0
+min min   	73    	47385     	61.0
+min min   	78    	28852     	61.0
+min min   	83    	0         	65.0
+min min   	88    	5895      	61.0
+min max   	8     	300       	0.0
+min max   	13    	561362    	11.0
+min max   	18    	2561749   	60.0
+min max   	23    	1679876   	60.0
+min max   	28    	1311217   	60.0
+min max   	33    	876229    	60.0
+min max   	38    	610430    	60.0
+min max   	43    	510240    	60.0
+min max   	48    	409914    	60.0
+min max   	53    	359833    	60.0
+min max   	58    	109587    	60.0
+min max   	63    	92377     	60.0
+min max   	68    	64426     	60.0
+min max   	73    	46778     	61.0
+min max   	78    	28723     	61.0
+min max   	83    	14880     	61.0
+min max   	88    	5646      	62.0

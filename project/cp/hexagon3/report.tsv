@@ -1,9 +1,5 @@
-value min           	4       	4667    	41
-value max           	0       	2915    	27
-value rnd           	0       	2901    	26
-bound min           	4       	3947    	45
-bound max           	0       	2104    	25
-bound rnd           	2       	3089    	33
-domain min          	4       	3947    	53
-domain max          	0       	2104    	30
-domain rnd          	4       	2923    	38
+value min           	4	4667    	40      	CQRSGAKPBEFILDHNJMO
+bound min           	3	3842    	41      	CQRSGAKPBEFILDHNJMO
+bound rnd           	1	2990    	31      	INOKFHMRAEDJQGBLCSP
+domain min          	3	3861    	49      	CQRSGAKPBEFILDHNJMO
+domain rnd          	3	2841    	36      	IKRNFAQOHEGCMDBSJLP

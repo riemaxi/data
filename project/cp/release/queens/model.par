@@ -1,0 +1,5 @@
+solutions: 0
+timeout: 60000
+runs: 2
+startsize: 8
+maxsize: 13

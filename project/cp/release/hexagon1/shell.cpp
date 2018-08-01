@@ -117,7 +117,7 @@ int main(int argc, char* argv[]){
  
  domainmin(p);
  domainmax(p);
- domainrnd(p);
+ domainrnd(p); 
  
  return 0;
 }

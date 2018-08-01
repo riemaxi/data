@@ -1,9 +1,9 @@
-value min           	17087   	113
-value max           	16895   	112
-value rnd           	20026   	124
-bound min           	13617   	125
-bound max           	13328   	122
-bound rnd           	16568   	133
-domain min          	13617   	149
-domain max          	13328   	145
-domain rnd          	16568   	167
+value min           	17087   	121     	CQRSGAKPBEFILDHNJMO
+value max           	16895   	114     	RQCKAGSIFEBPNHDLOMJ
+value rnd           	20026   	125     	INOKFHMRAEDJQGBLCSP
+bound min           	13617   	125     	CQRSGAKPBEFILDHNJMO
+bound max           	13328   	121     	RQCKAGSIFEBPNHDLOMJ
+bound rnd           	16568   	133     	INOKFHMRAEDJQGBLCSP
+domain min          	13617   	149     	CQRSGAKPBEFILDHNJMO
+domain max          	13328   	146     	RQCKAGSIFEBPNHDLOMJ
+domain rnd          	16568   	167     	INOKFHMRAEDJQGBLCSP

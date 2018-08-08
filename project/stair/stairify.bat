@@ -1,1 +1,1 @@
-type data\dna0.asm | python stream.py | python stairify.py
+type %1 | python normalize.py | python stream.py | python stairify.py

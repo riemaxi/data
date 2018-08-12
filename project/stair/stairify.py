@@ -1,7 +1,7 @@
 import sys
 from parameter import p
 
-def next_window(size):
+def window(size):
 	w = ''
 	while size>0:
 		c = sys.stdin.read(1)
@@ -13,23 +13,17 @@ def next_window(size):
 		
 	return w
 
-def first_reduction(w):
-	return w.count('1'), w[int(len(w)/2):].count('1') 
-	
-def next_reduction(w, overlap):
+def reduction(w, overlap):
 	ff = w.count('1')
 	return ff + overlap, ff
 	
 wsize = int(p.size)
 step = wsize/2
 
-w = next_window(wsize)
-ff, overlap = first_reduction(w)
-print(ff*100/wsize)
-
-w = next_window(step)
+w = window(step)
+overlap = 0
 while w:
-	ff, overlap = next_reduction(w, overlap)
+	ff, overlap = reduction(w, overlap)
 	print(ff*100/wsize)
 		
-	w = next_window(step)
+	w = window(step)

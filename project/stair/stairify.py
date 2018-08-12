@@ -22,16 +22,14 @@ def next_reduction(w, overlap):
 	
 wsize = int(p.size)
 step = wsize/2
-idx = 0
 
 w = next_window(wsize)
 ff, overlap = first_reduction(w)
-print(idx, ff, sep='\t')
+print(ff*100/wsize)
 
 w = next_window(step)
 while w:
 	ff, overlap = next_reduction(w, overlap)
-	print(idx, ff, sep='\t')
+	print(ff*100/wsize)
 		
 	w = next_window(step)
-	idx += 1

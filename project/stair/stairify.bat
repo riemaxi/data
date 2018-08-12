@@ -1,1 +1,1 @@
-type %1 | python normalize.py | python stream.py | python stairify.py
+type %1.dat | python normalize.py | python stream.py | python stairify.py > %1.stair.tsv

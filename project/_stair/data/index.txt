@@ -1,0 +1,4 @@
+ dna0.fasts	_bacillus_aminovorans.ASM164324v1.dna.nonchromosomal.fa
+ dna1.fasta	_bacillus_aminovorans.ASM164324v1.dna_sm.nonchromosomal.fa
+ dna2.fasta	Bacillus_amyloliquefaciens_umaf6639.ASM159376v1.dna.chromosome.Chromosome.fa
+ dna3.fasta	_clostridium_cellulosi.DG5.dna_rm.chromosome.I.fa

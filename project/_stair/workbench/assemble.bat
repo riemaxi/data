@@ -1,0 +1,1 @@
+type data\dna0.fasta | python normalize.py | python sort.py | python assemble.py data\dna0.normal.fasta > data\dna0.asm

@@ -4,7 +4,7 @@ import sys
 #from https://en.wikipedia.org/wiki/Needleman–Wunsch_algorithm
 
 #scoring schema
-SCR_MATCH = 1
+SCR_MATCH = 2
 SCR_MISMATCH = -1
 SCR_INDEL = -1
 
@@ -36,29 +36,25 @@ for r in range(1,len(sequence[1]) + 1):
 	for c in range(1,len(sequence[0]) + 1):
 		grid[r][c] = max( [grid[r-1][c-1] + match_score(float(sequence[1][r-1]), float(sequence[0][c-1])), grid[r-1][c] + SCR_INDEL, grid[r][c-1] + SCR_INDEL] )
 
-c = cols - 1
-r = rows - 1
+c,r = cols - 1, rows - 1
+a, b = [],[]
 
-a = [sequence[0][c-1]]
-b = [sequence[1][r-1]]
-
-while r > 0:
-	while c > 0:
-		if grid[r-1][c-1] >= max(grid[r][c-1], grid[r-1][c]):
-			a = [sequence[0][c-2]] + a
+while r > 0 and c > 0:
+	if grid[r-1][c-1] > max(grid[r][c-1], grid[r-1][c]):
+		a = [sequence[0][c-2]] + a
+		b = [sequence[1][r-2]] + b
+		r -= 1
+		c -= 1
+	else:
+		if grid[r-1][c] > max(grid[r-1][c-1], grid[r][c-1]):
+			a = [GAP] + a
 			b = [sequence[1][r-2]] + b
 			r -= 1
-			c -= 1
 		else:
-			if grid[r-1][c] > max(grid[r-1][c-1], grid[r][c-1]):
-				a = [GAP] + a
-				b = [sequence[1][r-2]] + b
-				r -= 1
-			else:
-				a = [sequence[0][c-2]] + a
-				b = [GAP] + b
-				c -= 1
+			a = [sequence[0][c-2]] + a
+			b = [GAP] + b
+			c -= 1
 
 print('\n'.join(['\t'.join([str(s) for s in row]) for row in grid ]))
 print()
-print('\t'.join(a),'\t'.join(b), sep = '\n')
+print('\t'.join(a[1:]),'\t'.join(b[1:]), sep = '\n')

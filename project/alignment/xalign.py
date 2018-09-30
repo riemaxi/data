@@ -23,7 +23,7 @@ for line in sys.stdin:
 cols = len(sequence[0]) + 1
 rows = len(sequence[1]) + 1
 
-grid = [[0 for x in range(cols)] for y in range(rows) ]
+grid = [[0 for x in range(cols+1)] for y in range(rows+1) ]
 
 for i in range(len(grid[0])):
 	grid[0][i] = -i
@@ -32,11 +32,11 @@ for i in range(len(grid)):
 	grid[i][0] = -i
 
 #score aupdate - core of the algorithm
-for r in range(1,len(sequence[1]) + 1):
-	for c in range(1,len(sequence[0]) + 1):
+for r in range(1,rows):
+	for c in range(1,cols):
 		grid[r][c] = max( [grid[r-1][c-1] + match_score(float(sequence[1][r-1]), float(sequence[0][c-1])), grid[r-1][c] + SCR_INDEL, grid[r][c-1] + SCR_INDEL] )
 
-c,r = cols - 1, rows - 1
+c,r = cols, rows
 a, b = [],[]
 
 while r > 0 and c > 0:

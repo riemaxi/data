@@ -5,7 +5,7 @@ import copy
 
 
 class Tool:
-	GAP = ''
+	GAP = '-'
 	
 	def score_to_string(score):
 		return '\n'.join(['\t'.join(['{:2.0f}'.format(s) for s in row]) for row in score])
@@ -43,7 +43,7 @@ class Tool:
 
 	def addgap(gaps,i):
 		prevgap = gaps.get(i+1,0)
-		if prevgap>0:
+		if prevgap:
 			gaps[i] = prevgap + 1
 			del gaps[i+1]
 		else:
@@ -69,7 +69,7 @@ class Tool:
 		except:
 			return None
 
-	def deploy(seq, pos, size, gaps, gapsymbol = '-'):
+	def deploy(seq, pos, size, gaps, gapsymbol = 	GAP):
 		data = []
 		q = []
 		for i in range(pos, pos + size):
@@ -84,7 +84,7 @@ class Tool:
 		return data
 
 
-	def ideploy(seq, pos, size, gaps, gapsymbol = '-'):
+	def ideploy(seq, pos, size, gaps, gapsymbol = GAP):
 		q = []
 		for i in range(pos, pos + size):
 			grange = Tool.gaprange(i, gaps)
@@ -92,8 +92,7 @@ class Tool:
 				yield gapsymbol
 				q += [seq[i]]
 			else:
-				for a in q + [seq[i]]:
-					yield a
+				yield from q + [seq[i]]
 				q = []
 
 

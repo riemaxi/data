@@ -12,7 +12,7 @@ seq1 = [float(f) for f in data1.split('\t')]
 pos1 = 0
 size1 = len(seq1)
 
-seq2 = [float(f) for f in data2.split('\t')]
+seq2 = [float(f) for f in data2.split('\t')][::-1]
 size2 = len(seq2)
 pos2 = 0
 

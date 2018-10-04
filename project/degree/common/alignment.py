@@ -248,16 +248,16 @@ class Realmen(Aligner):
 				if diagonal:
 					cgaps = copy.deepcopy(gaps2)
 					Tool.addgap(cgaps,i-1)
-					stack += [(i-1,j, copy.deepcopy(gaps1), cgaps)] # put that direction on hold
+					stack += [(i-1,j, copy.deepcopy(gaps1), cgaps)] # put this direction on hold
 				else:
 					Tool.addgap(gaps2,i-1)
 					i -= 1
 					left = True
 			
 			if score_current == score_up + self.gap_penalty:
-				if diagonal or left: # put that direction on hold
+				if diagonal or left: # put this direction on hold
 					cgaps = copy.deepcopy(gaps1)
-					Tool.assgap(cgaps, j-1)
+					Tool.addgap(cgaps, j-1)
 					stack += [(i,j-1, cgaps, copy.deepcopy(gaps2))]
 				else:
 					Tool.addgap(gaps1,j-1)

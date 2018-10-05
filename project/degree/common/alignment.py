@@ -273,7 +273,7 @@ class Realmen(Aligner):
 		
 	def solutions(self, seq1, seq2, score, m,n):
 		stack = [(m,n, {},{})]
-		while len(stack):
+		while stack:
 			yield self.solution(seq1, seq2, score, stack)
 
 	def alignment(self, seq1, seq2):

@@ -1,1 +1,0 @@
-type %1 | python normalize.py | python stream.py | python stairify.py

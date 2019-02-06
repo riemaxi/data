@@ -1,0 +1,6 @@
+reference = ../data/stage/reference/vibrio_splendidus_0.flast
+
+ports = 9090,9091,9092,9093
+#,9094,9095,9096
+
+outpath = log

@@ -1,0 +1,21 @@
+zero = GT
+window_size = 512
+
+min_size = 2500
+
+margin = 15
+epsilon = 1.0
+
+sample_size = 400
+
+cutoff_factor = 1
+
+query = ../data/stage/query/ERX2642146.fastq
+reference = ../data/stage/reference/vibrio_splendidus_0.flast
+
+hosts = localhost:9090,localhost:9091,localhost:9092,localhost:9093
+#,localhost:9094,localhost:9095,localhost:9096
+
+precision = 2
+
+

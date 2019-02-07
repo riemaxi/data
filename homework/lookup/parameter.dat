@@ -1,5 +1,0 @@
-hot_reference = ../../data/hot/reference/vibrio_splendidus_0.stair
-
-port = 9090
-
-outpath = log

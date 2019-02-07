@@ -3,6 +3,8 @@
 import os
 import random
 import dataset as ds
+import stairify as s
+import binning as b
 from parameter import p
 
 def print_with_cutoff(id, data, cutoff_factor, unit, margin):
@@ -34,12 +36,20 @@ def mutation(seq, n):
 	BASE = 'ACGT'
 	return ''.join([(b, BASE[(BASE.index(b) + random.randint(1,3)) % 4])[ random.choices([False,True], [(100-n)/100, n/100])[0] ] for b in seq])
 
+def random_sequence(size):
+	return 'A'*size
+
 def mutations(id, seq, step = 25):
-	for i in range(0, 100 + step, step):
-		yield id, i, mutation(seq,i)
+	yield id, 0, seq
+	yield id, 1, random_sequence(len(seq))
 
 def similarity(a,b):
 	return (100 * sum([[0,1][a[i] == b[i]] for i in range(len(a))]))/len(a)
+
+def stairify(seq, window_size, zero, precision):
+	seq = s.transform(len(seq), window_size, b.transform(seq, zero))
+	template = '{:.PRECISIONf}'.replace('PRECISION', precision)
+	return ' '.join([template.format(f) for f in seq])
 
 
 open('process.pid','a').write('{}\n'.format(os.getpid()))
@@ -53,10 +63,21 @@ query = p.query
 
 records = ds.records(rs=4, input=open(query), ok = lambda r: len(r[1]) >= min_size)
 
-# sample reference fragment mutations
-reference = p.reference
-fragment_size = 5 * max_query_size(records)
+fragment_size = 3 * max_query_size(records)
 
+zero = p.zero
+window_size = int(p.window_size)
+precision = p.precision
+
+# create hot reference
+reference = p.reference
+hot_reference = p.hot_reference
+
+with open(hot_reference,'w') as file:
+	for id, fragment in fragments(reference, cutoff_factor, unit, margin, fragment_size):
+		file.write('{}\t{}\n'.format(id, stairify(fragment, window_size, zero, precision)))
+
+# sample reference fragment mutations
 for id, fragment in fragments(reference, cutoff_factor, unit, margin, fragment_size):
 	for id,i, m in mutations(id, fragment):
 		print('control {}_{}'.format(id,i), m, sep='\t')

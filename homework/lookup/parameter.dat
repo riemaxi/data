@@ -1,6 +1,5 @@
-reference = ../data/stage/reference/vibrio_splendidus_0.flast
+hot_reference = ../../data/hot/reference/vibrio_splendidus_0.stair
 
-ports = 9090,9091,9092,9093
-#,9094,9095,9096
+port = 9090
 
 outpath = log

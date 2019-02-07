@@ -2,10 +2,12 @@
 import http.client, urllib.parse
 import json
 import os
+import threading as th
 
 import dataset as ds
 import binning as b
 import stairify as s
+import time
 from parameter import p
 
 def stairify(data, window_size, zero, base = 100):
@@ -20,20 +22,20 @@ def post(id, data, host):
 		headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
 		data = {'id' : id, 'data' : data.split(' ')}
 		con.request('POST', '/data', body = json.dumps(data), headers = headers)
+		return True
 	except:
-		pass
+		return False
 
 open('process.pid','a').write('{}\n'.format(os.getpid()))
 
-hosts = p.hosts.split(',')
+host = p.lookup_host
 window_size = int(p.window_size)
 zero = p.zero
 template = '{:.PRECISIONf}'.replace('PRECISION',p.precision)
 
-idx = 0
 for r in ds.records():
 	id, data = r[0].split('\t')
 
-	post(id, stair2str(stairify(data, window_size, zero), template), hosts[idx])
+	while not post(id, stair2str(stairify(data, window_size, zero), template), host):
+		time.sleep(1)
 
-	idx = (idx + 1) % len(hosts)

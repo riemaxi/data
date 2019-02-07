@@ -2,7 +2,7 @@
 
 import os
 
-for line in open('process.pid'):
-	os.system('kill {}'.format(line.strip()))
+pid = open('process.pid').read().strip()
+os.system('kill {}'.format(pid))
 
 os.system('rm -f process.pid')

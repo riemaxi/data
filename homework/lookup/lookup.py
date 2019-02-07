@@ -10,31 +10,34 @@ import time
 import clearwater as cw
 from parameter import p
 
+class Tool:
+	def reference_fragments():
+		for line in open(p.hot_reference):
+			id,f = line.strip().split('\t')
+			yield id, Tool.tofloat(f.split(' '))
+
+	def tofloat( data):
+		return [float(f) for f in data]
+
 
 class Handler(http.server.BaseHTTPRequestHandler):
 
-	def tofloat(self, data):
-		return [float(f) for f in data]
-
-	def load_fragments(self):
-		for line in open(self.reference):
-			id,i,f = line.strip().split('\t')
-			lst += [id,i, self.tofloat(f)]
-
-		return lst
 
 	def lookup_and_report(self, qid, qdata):
 		global outpath
-		global port
+		global reference_fragments
 
-		for rid,i,rdata in self.fragments:
-			starttime = time.time()
-			(scr,(rstart,rend),(qstart,qend), cnt),_ = cw.Warmmapper().map(rdata, qdata)
-			elapsed = time.time() - starttime
+		for rid, rdata in Tool.reference_fragments():
+			try:
+				starttime = time.time()
+				(scr,(rstart,rend),(qstart,qend), cnt),_ = cw.Warmmapper().map(rdata, qdata)
+				elapsed = time.time() - starttime
 
-			screport = '{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format('{}\t{}'.format(rid,i), qid, cnt, rstart, rend, qstart, qend, '{:0.2f}\t{:0.5f}'.format(scr, elapsed))
+				screport = '{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(rid, qid, cnt, rstart, rend, qstart, qend, '{:0.2f}\t{:0.5f}'.format(scr, elapsed))
 
-			open('{}/score_{}.out'.format(outpath, port),'a').write(screport)
+				open('{}/score.out'.format(outpath),'a').write(screport)
+			except Exception as e:
+				open('log/error.log','a').write('{}\n'.format(e))
 
 
 	def do_POST(self):
@@ -43,19 +46,14 @@ class Handler(http.server.BaseHTTPRequestHandler):
 		body = self.rfile.read(length).decode('utf-8')
 		body = json.JSONDecoder().decode(body)
 
-		if body.get('init'):
-			self.reference = body['reference']
-			self.load_fragments()
-		else:
-			self.lookup_and_report(self.tofloat(body['data']))
+		self.lookup_and_report(body['id'],Tool.tofloat(body['data']))
+
+
 
 open('process.pid','a').write('{}\n'.format(os.getpid()))
 
-port = int(sys.argv[1])
+port = int(p.port)
 outpath = p.outpath
-
 
 with socketserver.TCPServer(("", port), Handler) as httpd:
     httpd.serve_forever()
-
-

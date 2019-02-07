@@ -3,10 +3,10 @@ window_size = 300
 
 min_query_size = 1500
 
-reference_stage = ../data/stage/reference
-query_stage = ../data/stage/query
+reference_stage = ../../data/stage/reference
+query_stage = ../../data/stage/query
 
-reference = ../data/hot/reference
-query = ../data/hot/query
+reference = ../../data/hot/reference
+query = ../../data/hot/query
 
 

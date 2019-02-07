@@ -1,0 +1,15 @@
+zero = AC
+window_size = 512
+
+min_size = 2500
+
+margin = 15
+epsilon = 1.0
+
+sample_size = 800
+
+cutoff_factor = 0
+
+query = ../data/stage/query/ERX2642146.fastq
+
+

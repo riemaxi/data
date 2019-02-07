@@ -1,0 +1,7 @@
+score_path = ../lookup/log/score.out
+report_path = log/report.tsv
+
+bedtime = 4
+
+streamer = localhost:50001
+threshold = 0.1

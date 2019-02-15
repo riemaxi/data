@@ -28,8 +28,8 @@ def fragments(reference, cutoff_factor, unit, margin, fragment_size):
 		yield i, data[i:i + fragment_size]
 
 
-def stairify(seq, window_size, zero, precision):
-	seq = s.transform(len(seq), window_size, b.transform(seq, zero))
+def stairify(seq, window_size, zero, precision, order=0, base = 100):
+	seq = s.transform(len(seq), window_size, b.transform(seq, zero), base, order)
 	template = '{:.PRECISIONf}'.replace('PRECISION', precision)
 	return ' '.join([template.format(f) for f in seq])
 
@@ -48,6 +48,7 @@ fragment_size = 3 * mqsize
 zero = p.zero
 window_size = int(p.window_size)
 precision = p.precision
+order = int(p.derivative_order)
 
 # create hot reference
 reference = p.reference
@@ -56,7 +57,7 @@ hot_reference = p.hot_reference
 if not os.path.isfile(hot_reference):
 	with open(hot_reference,'w') as file:
 		for id, fragment in fragments(reference, cutoff_factor, unit, margin, fragment_size):
-			file.write('{}\t{}\n'.format(id, stairify(fragment, window_size, zero, precision)))
+			file.write('{}\t{}\n'.format(id, stairify(fragment, window_size, zero, precision, order)))
 
 
 # sample queries

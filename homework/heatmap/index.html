@@ -36,18 +36,25 @@
 
       init_heatmap(data){
 	this.reference = data.rfidx
-	this.datasetsize = data.size
+	this.datasetsize = data.sample_size * this.reference.length
+
+	this.set_zero_heatmap(data.sample_size)
+
 	this.buffer = []
       },
 
       add_record(item){
+
 	this.buffer.push(item)
 
 	this.message = this.buffer.length
 
 	item[0] = this.reference.indexOf(item[0])
 	if (this.buffer.length >= this.datasetsize){
-	  this.set_heatmap(20)
+	  sample_size = Math.floor(this.datasetsize/this.reference.length)
+          this.message += ' , ' + sample_size	 
+
+	  this.set_heatmap(sample_size)
 	  this.buffer = []
         }
       },
@@ -72,8 +79,33 @@
        return values
       },
 
+      get_zero_row(row, cols){
+       values = []
+       for (col=0; col<cols;col++){
+         values.push({x: col, y: 0.0 })
+       }
+   
+       return values
+      },
+
+
+      set_zero_heatmap(rows){
+	this.chartOptions = this.getChartOptions()
+
+	this.series = []
+	cols = this.reference.length
+        for (row=0;row<rows;row++)
+         this.series.push({
+          name: row,
+	  data: this.get_zero_row(row, cols) 
+        })
+
+       },
+
 
       set_heatmap(rows){
+	this.chartOptions = this.getChartOptions()
+
 	this.series = []
 	cols = this.reference.length
         for (row=0;row<rows;row++)
@@ -81,8 +113,6 @@
           name: row,
 	  data: this.get_row(row, cols) 
         })
-
-	this.chartOptions = this.getChartOptions()
 
        },
 

@@ -36,12 +36,20 @@ def reduction(w, overlap):
 	else:
 		return [0,0,None]
 
+def derivative(v, order):
+	der = [v[i] - v[i-1] for i in range(len(v)-1,0,-1)][::-1]
+	while order > 1:
+		der = [der[i] - der[i-1] for i in range(len(der)-1,0,-1)][::-1]
+		order += -1
+
+	return der
+
 # Transform a binned sequence into a stairs vector
 # parameters
 # seqsize - the size of the sequence
 # wsize - the window size
 # data - the binned version of the DNA sequence 
-def transform(seqsize, wsize, data, base=100):
+def transform(seqsize, wsize, data, base=100, order = 0):
 	step = wsize//2
 
 	w, qrest, start = window(data,seqsize,wsize,0,'')
@@ -54,7 +62,10 @@ def transform(seqsize, wsize, data, base=100):
 		w, rest, start = window(data,seqsize,step, start,qrest)
 		ff, overlap, w = reduction(w, overlap)
 
-	return vector
+	if not order:
+		return vector
+	else:
+		return derivative(vector, order)
 
 def complement(data, base=100):
 	return [base-f for f in data[::-1]]

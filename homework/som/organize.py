@@ -31,7 +31,6 @@ def statistics():
 
 def level(cnt,maxcnt, stdvc):
 	return stdvc/(abs(maxcnt - cnt) + stdvc)
-	#return 1/(0.5 * stdvc * abs(maxcnt - cnt) + 1)
 
 
 def filter(n, maxcnt, stdv, lst, threshold = 0.3):
@@ -41,6 +40,9 @@ def filter(n, maxcnt, stdv, lst, threshold = 0.3):
 			if score >= threshold:
 				yield rid, qid, cnt, rstart, rend, qstart, qend, score
 
+def print_post(data):
+	print(*data, sep='\t', flush = True)
+
 def post(data, streamer, event = '/message'):
 	try:
 		con = http.client.HTTPConnection(streamer)
@@ -48,24 +50,22 @@ def post(data, streamer, event = '/message'):
 		headers = {"Content-type": "application/json"}
 		con.request('POST', event, json.dumps({"item": data}), headers = headers)
 
-		print(*data, sep='\t', flush = True)
+		print_post(data)
 
 		return True
 	except Exception as e:
 		return False
 
-def post_init(size):
-	data = {'rfidx' : reference_fragment_index(p.hot_reference), 'size'  : size }
+def post_init(sample_size):
+	data = {'rfidx' : reference_fragment_index(p.hot_reference), 'sample_size' : sample_size }
 	post(data, p.organize_streamer, '/init')
 
 def report(streamer, threshold):
 	n,maxcnt,_,stdv,lst = statistics()
 
-	post_init(n)
-
-
 	for rid, qid, cnt, rstart, rend, qstart, qend, score in filter(n,maxcnt,stdv,lst, threshold):
 		post((rid,qid,cnt,rstart,rend,qstart,qend,score), streamer)
+
 	return n
 
 def reference_fragment_index(path):
@@ -82,4 +82,6 @@ def lookup_ready(path, size):
 	open('log/counter.txt','w').write(str(count) + ' , ' + str(size))
 	return count >= size
 
-report( p.organize_streamer, float(p.organize_threshold))
+post_init(int(p.sample_size))
+
+report( p.organize_streamer, float(p.organize_threshold) )

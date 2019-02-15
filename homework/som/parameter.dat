@@ -5,6 +5,7 @@ reference = ../../data/stage/reference/vibrio_splendidus_0.flast
 zero = GT
 window_size = 512
 precision = 2
+derivative_order = 0
 
 sample_size = 20
 sample_cutoff_factor = 1

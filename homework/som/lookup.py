@@ -30,8 +30,6 @@ def lookup_and_report(qid, qdata):
 		count += 1
 	return count
 
-
-
 count = 0
 for line in sys.stdin:
 	id, data = line.strip().split('\t')

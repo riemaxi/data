@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import os
 import dataset as ds
 import binning as b
 import stairify as s
@@ -31,7 +32,7 @@ for r in ds.records():
 	id, data = r[0].split('\t')
 
 	if id in ['3','7','17']:
-		print(id, reference_mutation(int(id),p.hot_reference, mqsize), sep = '\t')
+		print(id, reference_mutation(int(id),p.hot_reference, mqsize), sep = '\t', flush = True)
 	else:
-		print(id, stair2str(stairify(data, window_size, zero, order), template), sep = '\t')
+		print(id, stair2str(stairify(data, window_size, zero, order), template), sep = '\t', flush=True)
 

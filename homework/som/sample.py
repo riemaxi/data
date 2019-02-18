@@ -10,10 +10,10 @@ from parameter import p
 
 def print_with_cutoff(id, data, cutoff_factor, unit, margin):
 	cutoff = cutoff_factor * (len(data) % unit)
-	print(id, data[:-cutoff] if cutoff else data, sep='\t')
+	print(id, data[:-cutoff] if cutoff else data, sep='\t', flush=True)
 
 def print_without_cutoff(id, data,cutoff_factor, unit, margin):
-	print(id, data[margin:-margin] if margin else data, sep='\t')
+	print(id, data[margin:-margin] if margin else data, sep='\t', flush=True)
 
 
 def fragments(reference, cutoff_factor, unit, margin, fragment_size):

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>STAIRS heatmap - demo</title>
+    </head>
+
+    <body>
+<div id="html">
+    <div id="chart">
+	<p>{{message}}</p>
+      <apexchart type=heatmap height=700 :options="chartOptions" :series="series" />
+    </div>
+  </div>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue-apexcharts"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script>
+    var socket = null
+
+     new Vue({
+      el: '#chart',
+
+      created(){
+       socket = io()
+       socket.on('message', (msg) => this.add_record(msg.item))
+       socket.on('init', (msg) => this.init_heatmap(msg.item))
+      },
+
+     methods: {
+
+      init_heatmap(data){
+	this.reference = data.rfidx
+	this.datasetsize = data.sample_size * this.reference.length
+
+	this.set_zero_heatmap(data.sample_size)
+
+	this.buffer = []
+      },
+
+      add_record(item){
+
+	this.buffer.push(item)
+
+	this.message = this.buffer.length
+
+	item[0] = this.reference.indexOf(item[0])
+	if (this.buffer.length >= this.datasetsize){
+	  sample_size = Math.floor(this.datasetsize/this.reference.length)
+          this.message += ' , ' + sample_size	 
+
+	  this.set_heatmap(sample_size)
+	  this.buffer = []
+        }
+      },
+
+      get_score(row, col){
+	for (i=0; i<this.buffer.length; i++){
+	  item = this.buffer[i]
+
+	  if (item[0] == col && item[1] == row){
+		return item[item.length-1] * 100
+          }
+        }
+	return 0.0
+      },
+
+      get_row(row, cols){
+       values = []
+       for (col=0; col<cols;col++){
+         values.push({x: col, y: this.get_score(row, col) })
+       }
+   
+       return values
+      },
+
+      get_zero_row(row, cols){
+       values = []
+       for (col=0; col<cols;col++){
+         values.push({x: col, y: 0.0 })
+       }
+   
+       return values
+      },
+
+
+      set_zero_heatmap(rows){
+	this.chartOptions = this.getChartOptions()
+
+	this.series = []
+	cols = this.reference.length
+        for (row=0;row<rows;row++)
+         this.series.push({
+          name: row,
+	  data: this.get_zero_row(row, cols) 
+        })
+
+       },
+
+
+      set_heatmap(rows){
+	this.chartOptions = this.getChartOptions()
+
+	this.series = []
+	cols = this.reference.length
+        for (row=0;row<rows;row++)
+         this.series.push({
+          name: row,
+	  data: this.get_row(row, cols) 
+        })
+
+       },
+
+        getChartOptions(){
+	return{
+
+	chart: {
+            height: 700,
+            type: 'heatmap',
+          },
+          stroke: {
+            width: 0
+          },
+          plotOptions: {
+            heatmap: {
+              radius: 30,
+              enableShades: false,
+              colorScale: {
+                ranges: [{
+                    from: 0,
+                    to: 49.99,
+                    color: '#FFA07A'
+                  },
+		{
+			from: 50,
+			to: 100,
+			color: '#800000'
+		}],
+              },
+
+            }
+          },
+
+          dataLabels: {
+            enabled: false,
+            style: {
+              colors: ['#fff']
+            }
+          },
+
+	xaxis : {
+		type: 'category'
+ 	},
+
+          title: {
+            text: 'STAIRS heatmap - demo'
+          }
+        }
+       }
+
+      },
+
+      components: {
+        apexchart: VueApexCharts,
+      },
+
+      data() {
+       return {
+	buffer: [],
+
+	message: '',
+
+	reference: [],
+
+	datasetsize: 0,
+
+        series: [],
+
+	chartOptions : {}
+
+       }
+      },
+
+    })
+     </script>
+    </body>
+</html>

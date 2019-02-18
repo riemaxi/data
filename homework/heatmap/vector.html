@@ -13,14 +13,14 @@
          socket.on('message', (msg) => add_record(msg.item));
          socket.on('init', (msg) => init_heatmap(msg.item));
 
-         hm = new Heatmap(0,0)
+         l = new Lines(0)
 
          function add_record(data){
-           hm.addScore(data)
+           l.addScore(data)
          }
 
          function init_heatmap(data){
-           hm.set(data.rfidx, data.sample_size);
+           l.set(data);
          }
 
          function setup(){
@@ -30,7 +30,7 @@
          }
 
          function draw(){
-           hm.update()
+           l.update()
          }
 
 	</script>

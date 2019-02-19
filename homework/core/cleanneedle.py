@@ -1,41 +1,28 @@
 import math
 
 class Tool:
-	def gaprange(i, gaps):
-		try:
-			return next((j,n) for j,n in gaps.items() if j<=i and i<j+n)
-		except:
-			return None
+	def deploy(data, gaps, symbol='-'):
+		offset = 0
+		for i in sorted(gaps):
+			data = data[:i + offset] + [symbol]*gaps[i] + data[i + offset:]
+			offset += gaps[i]
 
-	def deploy(seq, gaps, symbol = '-'):
-		data = []
-		q = []
-		for i in range(len(seq)):
-			grange = gaprange(i, gaps)
-			if grange != None:
-				data += symbol
-				q += [seq[i]]
-			else:
-				data += q + [seq[i]]
-				q = []
-
-		return data + [symbol] * gaps.get(len(data),0)
-
+		return data
 
 	def addfaps(gaps, i, number=1):
 		prevgap = gaps.get(i+1,0)
 		if prevgap:
-				gaps[i] = prevgap + number
-				del gaps[i+1]
-			else:
-				gaps[i] = gaps.get(i,0) + number
+			gaps[i] = prevgap + number
+			del gaps[i+1]
+		else:
+			gaps[i] = gaps.get(i,0) + number
 
 
 	def copygaps(gaps):
 		return gaps.copy()
 
 class Setting:
-	def __init__(self, match_factor = 0.3, match_threshold = 0.5, gap_penalty = -5.0, mismatch_penalty = -5.0, match_reward = 10.0):
+	def __init__(self, match_factor = 0.3, match_threshold = 0.5, gap_penalty = -1.0, mismatch_penalty = -1.0, match_reward = 1.0):
 		self.match_factor = match_factor
 		self.match_threshold = match_threshold
 
@@ -130,3 +117,14 @@ class Aligner:
 		matrix = self.setmatrix(seqa, seqb)
 
 		return self.gaps(matrix, seqa, seqb, [({},{}, len(seqa)-1, len(seqb)-1)])
+
+	def totalscore(self, seqa, seqb, gapsymbol = '-', gapscore = 0.5):
+		score = 0.0
+		for i in range(len(seqa)):
+			a,b = seqa[i], seqb[i]
+			if a != gapsymbol and b != gapsymbol:
+				score += [0.0,1.0][self.equals(a,b)]
+			else:
+				score += gapscore
+
+		return score/len(seqa)

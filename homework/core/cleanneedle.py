@@ -16,16 +16,28 @@ class Tool:
 		return sep.join([template.format(f) if type(f) in (float,int) else f for f in Tool.deploy(data, gaps, symbol)])
 
 
-	def deployalignment(a, gapsa, b, gapsb, template='{:0.2f}',  symbol='_____', sep=' '):
+	def deployalignments(a, gapsa, b, gapsb, template='{:0.2f}',  symbol='_____', sep=' '):
 		a = Tool.deploy(a, gapsa,symbol)
 		b = Tool.deploy(b, gapsb,symbol)
 		tail = len(a) - len(b)
 		if tail>0:
 			return  Tool.alignment2string(a,template,sep), Tool.alignment2string(b + [symbol]*tail,template,sep)
 		elif tail<0:
-			return  Tool.alignment2string(a +  + [symbol]*(-tail),template,sep), Tool.alignment2string(b,template,sep)
+			return  Tool.alignment2string(a + [symbol]*(-tail),template,sep), Tool.alignment2string(b,template,sep)
 		else:
 			return  Tool.alignment2string(a,template,sep), Tool.alignment2string(b,template,sep)
+
+	def deployalignment(a, gapsa, b, gapsb, template='{:0.2f}',  symbol='_____', sep=' '):
+		a = Tool.deploy(a, gapsa,symbol)
+		b = Tool.deploy(b, gapsb,symbol)
+		tail = len(a) - len(b)
+		if tail>0:
+			return  a, b + [symbol]*tail
+		elif tail<0:
+			return  a + [symbol]*(-tail), b
+		else:
+			return  a, b
+
 
 
 	def addgaps(gaps, i, number=1):

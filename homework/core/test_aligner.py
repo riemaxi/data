@@ -9,8 +9,9 @@ def align(a,b):
 
 	for gapsa, gapsb in al.align(a,b):
 		da, db = cn.Tool.deployalignment(a,gapsa,b,gapsb)
-		print(da,db, sep='\n')
-		print(al.totalscore(cn.Tool.deploy(a,gapsa), cn.Tool.deploy(b,gapsb)))
+
+		print(cn.Tool.alignment2string(da),cn.Tool.alignment2string(db), sep='\n')
+		print( al.totalscore(da,db,gapsymbol='_____') )
 
 		print()
 

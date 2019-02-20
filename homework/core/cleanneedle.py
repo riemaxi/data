@@ -1,6 +1,25 @@
 import math
 
 class Tool:
+	def topalignments(list, maxscore = .6, top = 2):
+		scores = []
+		for da,db,score in list:
+			if score >= maxscore and not score in scores:
+				scores += [score]
+				yield Tool.alignment2string(da),Tool.alignment2string(db),  score
+
+				top -= 1
+				if not top:
+					break
+
+
+	def trimalignment(a,b, symbol):
+		offset = 0
+		while (a[offset], b[offset]) == (symbol,symbol):
+			offset += 1
+
+		return a[offset:], b[offset:]
+
 	def alignment2string(data, template = '{:0.2f}', sep=' '):
 		return sep.join([template.format(f) if type(f) in (float,int) else f for f in data])
 
@@ -13,7 +32,7 @@ class Tool:
 		return data
 
 	def deploys(data, gaps,template='{:0.2f}', symbol='_____', sep=' '):
-		return sep.join([template.format(f) if type(f) in (float,int) else f for f in Tool.deploy(data, gaps, symbol)])
+		return Too.alignment2string( Tool.deploy(data, gaps, symbol), template, sep )
 
 
 	def deployalignments(a, gapsa, b, gapsb, template='{:0.2f}',  symbol='_____', sep=' '):
@@ -27,16 +46,16 @@ class Tool:
 		else:
 			return  Tool.alignment2string(a,template,sep), Tool.alignment2string(b,template,sep)
 
-	def deployalignment(a, gapsa, b, gapsb, template='{:0.2f}',  symbol='_____', sep=' '):
+	def deployalignment(a, gapsa, b, gapsb, symbol='_____'):
 		a = Tool.deploy(a, gapsa,symbol)
 		b = Tool.deploy(b, gapsb,symbol)
 		tail = len(a) - len(b)
 		if tail>0:
-			return  a, b + [symbol]*tail
+			return  Tool.trimalignment(a, b + [symbol]*tail, symbol)
 		elif tail<0:
-			return  a + [symbol]*(-tail), b
+			return  Tool.trimalignment(a + [symbol]*(-tail), b, symbol)
 		else:
-			return  a, b
+			return  Tool.trimalignment(a, b, symbol)
 
 
 
@@ -188,13 +207,13 @@ class Aligner:
 
 		return self.gaps(matrix, seqa, seqb, [({},{}, len(seqa)-1, len(seqb)-1)])
 
-	def totalscore(self, seqa, seqb, gapsymbol = '-', gapscore = 0.5):
-		score = 0.0
-		for i in range(min(len(seqa), len(seqb))):
-			a,b = seqa[i], seqb[i]
-			if a != gapsymbol and b != gapsymbol:
-				score += [0.0,1.0][self.equals(a,b)]
-			else:
-				score += gapscore
+	def totalscore(self, a, b, gapsymbol = '-', gapscore = 0.5):
+		v = [[0.0,1.0][self.equals(a[i],b[i])] if a[i] != gapsymbol and b[i] != gapsymbol else gapscore for i in range( min( len(a),len(b) ) )]
 
-		return score/len(seqa)
+		return sum(v)/len(v)
+
+	def deployments(self, a,b,gapsymbol='_____'):
+		for gapsa, gapsb in self.align(a,b):
+			da, db = Tool.deployalignment(a,gapsa,b,gapsb,gapsymbol)
+			yield da, db , self.totalscore(da,db,gapsymbol)
+

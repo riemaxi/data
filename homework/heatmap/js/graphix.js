@@ -18,13 +18,13 @@ class Heatmap{
 		return score != null?score : defvalue
 	}
 
-	update(){
+	update(x, y, size){
 		for (let row = 0; row < this.rows; row++)
 			for (let col = 0; col < this.cols; col++){
-				let c1 = map(col,0,this.cols-1, 0, width);
-				let r1 = map(row,0,this.rows-1, 0, height);
-				let c2 = map(col+1,0,this.cols-1, 0, width);
-				let r2 = map(row+1,0,this.rows-1, 0, height);
+				let c1 = map(col,0,this.cols-1, x, x + size.width);
+				let r1 = map(row,0,this.rows-1, y, y + size.height);
+				let c2 = map(col+1,0,this.cols-1, x, x +  size.width);
+				let r2 = map(row+1,0,this.rows-1, y, y + size.height);
 
 				let color = map(this.getScore(col, row), 0, 100, 255, 0);
 
@@ -55,19 +55,36 @@ class Lines{
 		this.data[s.position] = s.value
 	}
 
-	update(){
+	update(x, y, size){
 		strokeWeight(4);
 		stroke(0)
 
 		for (let pos = 1; pos < this.size; pos++){
-			let x1 = map(pos-1, 0, this.size-1,0, width);
-			let y1 = map(this.getScore(pos-1), 0, 100, height, 0);
+			let x1 = map(pos-1, 0, this.size-1,x, x + size.width);
+			let y1 = map(this.getScore(pos-1), 0, 100, y + size.height, y);
 
-			let x2 = map(pos, 0, this.size-1,0, width);
-			let y2 = map(this.getScore(pos), 0, 100, height, 0);
+			let x2 = map(pos, 0, this.size-1,x, x + size.width);
+			let y2 = map(this.getScore(pos), 0, 100, y + size.height, y);
 
 			line(x1,y1,x2,y2)
 
+		}
+	}
+}
+
+
+class Layout{
+	constructor(xo,yo, region){
+		this.region = region
+		this.xo = xo
+		this.yo = yo
+
+	}
+
+	update(){
+		for (let i=0; i<this.region.length;i++){
+			r = this.region[i]
+			r.component.update(this.xo + r.position.x, this.yo + r.position.y, r.size)
 		}
 	}
 }

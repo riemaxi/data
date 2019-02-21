@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <title>STAIRS heatmap - demo</title>
 
+	 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
         <script src="/socket.io/socket.io.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script>
 	<script src="js/graphix.js"></script>
@@ -13,7 +14,16 @@
          socket.on('message', (msg) => add_record(msg.item));
          socket.on('init', (msg) => init_heatmap(msg.item));
 
-         hm = new Heatmap(0,0)
+	hm = new Heatmap(0,0)
+
+	layout = new Layout(10,10,[
+		{
+			component: hm,
+			position: {x: 20, y: 30},
+			size: {width: 200, height: 200}
+
+		}
+	])
 
          function add_record(data){
            hm.addScore(data)
@@ -24,13 +34,13 @@
          }
 
          function setup(){
-           createCanvas(600,400);
-           background(127);
+           createCanvas(600,400).parent('canvas');
+           background(200);
            stroke(1)
          }
 
          function draw(){
-           hm.update()
+           layout.update()
          }
 
 	</script>
@@ -38,5 +48,23 @@
     </head>
 
 <body>
+ <table>
+  <tr>
+   <td>Heatmap</td>
+   <td>Selection</td>
+  </tr>
+
+  <tr>
+   <td>
+    <div id="canvas" ></div>
+   </td>
+   <td>
+    <div id="detail">{{selection}}</div>
+   </td>
+  </tr>
+ </table>
+
+ <script src="gui/detail.js"></script>
 </body>
+
 

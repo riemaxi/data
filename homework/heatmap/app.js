@@ -8,6 +8,8 @@ let PORT = 50001
 
 app.use("/style", express.static(__dirname + "/style"))
 app.use("/js", express.static(__dirname + "/js"))
+app.use("/gui", express.static(__dirname + "/gui"))
+
 app.use(bodyParser.urlencoded({extended : true}))
 app.use(bodyParser.json())
 

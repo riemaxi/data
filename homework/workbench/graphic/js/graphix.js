@@ -96,6 +96,59 @@ class Lines{
 }
 
 
+class Bars{
+	constructor(data, minv = 0, maxv = 100){
+		this.data = data != null ? data : {}
+		this.size = this.data.length;
+
+		this.min = minv
+		this.max = maxv
+	}
+
+	reset(size){
+		this.size = size;
+		this.data = {}
+	}
+
+	getScore(position, defvalue = 0){
+		let score = this.data[position];
+		return score != null?score : defvalue
+	}
+
+	addScore(s){
+		this.data[s.position] = s.value
+	}
+
+	addAll(data){
+	   this.reset(data.length);
+	   for (let i=0; i < this.size; i++)
+		this.addScore({ position: i, value : data[i]})
+	}
+
+	update(x, y, size){
+		strokeWeight(2);
+		stroke(0)
+
+		for (let pos = 0; pos < this.size; pos++){
+			let score =  this.getScore(pos)
+
+			if (isNaN(score))
+				continue;
+
+			let x1 = map(pos, 0, this.size-1,x, x + size.width);
+
+			let y1 = map(0, this.min, this.max, y + size.height, y);
+			let y2 = map(score, this.min, this.max, y + size.height, y);
+
+
+			line(x1,y1,x1,y2)
+
+		}
+	}
+}
+
+
+
 class Layout{
 	constructor(xo,yo, region){
 		this.region = region != null ? region : []

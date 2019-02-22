@@ -229,15 +229,15 @@ class Aligner:
 		if first:
 			return self.gaps(matrix, seqa, seqb)
 		else:
-			return self.allgaps(matrix, seqa, [({},{}, len(seqa)-1, len(seqb)-1)])
+			return self.allgaps(matrix, seqa, seqb, [({},{}, len(seqa)-1, len(seqb)-1)])
 
 	def totalscore(self, a, b, gapsymbol = '-', gapscore = 0.5):
 		v = [[0.0,1.0][self.equals(a[i],b[i])] if a[i] != gapsymbol and b[i] != gapsymbol else gapscore for i in range( min( len(a),len(b) ) )]
 
 		return sum(v)/len(v)
 
-	def deployments(self, a,b,gapsymbol='_____'):
-		for gapsa, gapsb in self.align(a,b):
+	def deployments(self, a,b,first = True, gapsymbol='_____'):
+		for gapsa, gapsb in self.align(a,b, first):
 			da, db = Tool.deployalignment(a,gapsa,b,gapsb,gapsymbol)
 			yield da, db , self.totalscore(da,db,gapsymbol)
 

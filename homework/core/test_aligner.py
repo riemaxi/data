@@ -9,7 +9,7 @@ def align(a,ga, b, gb):
 	cn.Tool.printmatrix(al.setmatrix(a,b))
 	print()
 
-	for da,db,s in cn.Tool.topalignments(al.deployments(a,b), 0.1, 25):
+	for da,db,s in cn.Tool.topalignments(al.deployments(a,b, False), 0.1, 25):
 		print(da, db, sep='\n')
 		print(s)
 

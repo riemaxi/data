@@ -21,15 +21,17 @@
 	   data = data.split(',')
 	   a = data[0].split(" ")
 	   b = data[1].split(" ")
-	   bnd = getBoundaries(a.concat(b))
+	   bnd = getBoundaries(a)
+	   bnd = getBoundaries(b, bnd.min, bnd.max)
+
 	   l.add( {
-			component: new Lines(a, bnd.min, bnd.max),
+			component: new Bars(a, bnd.min, bnd.max),
 			position: {x: 10, y: l.region.length * 60 + 40},
 			size: {width: 800, height: 100}
 			})
 
 	   l.add( {
-			component: new Lines(b, bnd.min,bnd.max),
+			component: new Bars(b, bnd.min,bnd.max),
 			position: {x: 10, y: l.region.length * 60 + 30},
 			size: {width: 800, height: 100}
 			})
@@ -37,9 +39,7 @@
          
 	 }
 
-         function getBoundaries(data){
-		minv = 500
-		maxv = -500
+         function getBoundaries(data, minv = 500, maxv = -500){
 		for (let i=0; i < data.length; i++){
 			if (isNaN(data[i]))
 				continue;

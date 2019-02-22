@@ -23,4 +23,4 @@ organize_report_path = log/report.tsv
 organize_threshold = -1
 
 log = log
-repo = ../repo/vibrio_splendidus_0.tsv
+repo = ../../repo/vibrio_splendidus_0.tsv

@@ -33,6 +33,7 @@ app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
 app.get("/vector", (req, res) => res.sendFile(__dirname + "/vector.html"))
 app.get("/stairs", (req, res) => res.sendFile(__dirname + "/stairs.html"))
 app.get("/alignment", (req, res) => res.sendFile(__dirname + "/alignment.html"))
+app.get("/dalignment", (req, res) => res.sendFile(__dirname + "/dalignment.html"))
 
 app.post('/message', (req, res) => {
     io.emit('message', req.body)
@@ -52,6 +53,11 @@ io.on("connection", (socket) => {
     socket.on('align', () => {
 	emitVectors("align.txt", 'align')
     })
+
+    socket.on('dalign', () => {
+	emitVectors("dalign.txt", 'dalign')
+    })
+
 
 })
 

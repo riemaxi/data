@@ -10,28 +10,45 @@
 
         <script>
          socket = io();
-         socket.on("align", (msg) => add_lines(msg));
+         socket.on("dalign", (msg) => add_lines(msg));
 
 	l = new Layout(10,10)
 
-	socket.emit("align")
+	socket.emit("dalign")
 
 
          function add_lines(data){
 	   data = data.split(',')
+	   a = data[0].split(" ")
+	   b = data[1].split(" ")
+	   bnd = getBoundaries(a.concat(b))
 	   l.add( {
-			component: new Lines(data[0].split(" ")),
+			component: new Lines(a, bnd.min, bnd.max),
 			position: {x: 10, y: l.region.length * 60 + 40},
 			size: {width: 800, height: 100}
 			})
 
 	   l.add( {
-			component: new Lines(data[1].split(" ")),
+			component: new Lines(b, bnd.min,bnd.max),
 			position: {x: 10, y: l.region.length * 60 + 30},
 			size: {width: 800, height: 100}
 			})
 
-         }
+         
+	 }
+
+         function getBoundaries(data){
+		minv = 500
+		maxv = -500
+		for (let i=0; i < data.length; i++){
+			if (isNaN(data[i]))
+				continue;
+
+			minv = Math.min(minv, data[i])
+			maxv = Math.max(maxv, data[i])
+		}
+		return {min : minv, max : maxv}
+	 }
 
          function setup(){
            createCanvas(900,600);

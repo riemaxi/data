@@ -41,10 +41,12 @@ class Heatmap{
 }
 
 class Lines{
-	constructor(data){
+	constructor(data, minv = 0, maxv = 100){
 		this.data = data != null ? data : {}
-
 		this.size = this.data.length;
+
+		this.min = minv
+		this.max = maxv
 	}
 
 	reset(size){
@@ -79,13 +81,13 @@ class Lines{
 				continue;
 
 			let x1 = map(pos-1, 0, this.size-1,x, x + size.width);
-			let y1 = map(prevscore, 0, 100, y + size.height, y);
+			let y1 = map(prevscore, this.min, this.max, y + size.height, y);
 
 			if (isNaN(score))
 				continue;
 
 			let x2 = map(pos, 0, this.size-1,x, x + size.width);
-			let y2 = map(score, 0, 100, y + size.height, y);
+			let y2 = map(score, this.min, this.max, y + size.height, y);
 
 			line(x1,y1,x2,y2)
 

@@ -11,6 +11,6 @@ id = 0
 with open('{}/{}.flast'.format(outpath, name),'w') as file:
 	for r in ds.records(input= open(inpath), rs=4):
 		file.write('{}\t{}\n'.format(id, r[1]))
-		print(id, r[1][:100], len(r[1]))
+		print(id, r[1][:20], len(r[1]))
 
 		id += 1

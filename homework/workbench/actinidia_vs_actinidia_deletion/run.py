@@ -15,6 +15,8 @@ start = 10000
 size = 5000
 zero = 'GT'
 window_size = 512
+top = 100
+maxscore = 0.3
 
 sequence = open(path).read().strip()
 inversion = sequence[:start] + sequence[start + size:]
@@ -24,7 +26,7 @@ ss = s.transform(len(sequence), window_size, b.transform(sequence, zero))
 si = s.transform(len(inversion), window_size, b.transform(inversion, zero))
 
 with open(outpath, 'w') as file:
-	for dr, dq, score in cn.Tool.topalignments(al.deployments(ss, si, first = False), maxscore = 0.0, top = 10):
-		file.write( '{}\n{}\n'.format( dr, dq ) )
+	for dr, dq, score in cn.Tool.topalignments(al.deployments(ss, si, first = False), maxscore, top):
+		file.write( '{}\n{}\n{:0.8f}\n'.format( dr, dq, score ) )
 		print('ss', 'si', score , flush = True, sep='\t')
 

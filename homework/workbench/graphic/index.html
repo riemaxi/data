@@ -11,30 +11,35 @@
 
         <script>
          socket = io();
-         socket.on('message', (msg) => add_record(msg.item));
-         socket.on('init', (msg) => init_heatmap(msg.item));
+         socket.on('heatmap', (msg) => add_record(msg));
+	 socket.emit('heatmap')
 
-	hm = new Heatmap(0,0)
+	hm = new Heatmap()
 
 	layout = new Layout(10,10,[
 		{
 			component: hm,
-			position: {x: 20, y: 30},
-			size: {width: 200, height: 200}
+			position: {x: 10, y: 10},
+			size: {width: 800, height: 100}
 
 		}
 	])
 
          function add_record(data){
-           hm.addScore(data)
+	   data = data.split(" ")
+	   if (data[2] == "init")
+		init_heatmap(data[0], data[1])
+	   else
+	        hm.addScore(data[1], data[0], data[2])
          }
 
-         function init_heatmap(data){
-           hm.set(data.rfidx, data.sample_size);
-         }
+	function init_heatmap(rows, cols){
+		hm.set(rows, cols)
+	}
+
 
          function setup(){
-           createCanvas(600,400).parent('canvas');
+           createCanvas(900,600).parent('canvas');
            background(200);
            stroke(1)
          }

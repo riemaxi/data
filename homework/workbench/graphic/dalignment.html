@@ -26,14 +26,16 @@
 
 	   l.add( {
 			component: new Bars(a, bnd.min, bnd.max),
-			position: {x: 10, y: l.region.length * 60 + 40},
-			size: {width: 800, height: 100}
-			})
-
-	   l.add( {
+			position: {x: 10, y: l.region.length * 40 + 40},
+			size: {width: 800, height: 60}
+			}).add( {
 			component: new Bars(b, bnd.min,bnd.max),
-			position: {x: 10, y: l.region.length * 60 + 30},
-			size: {width: 800, height: 100}
+			position: {x: 10, y: l.region.length * 40 + 30},
+			size: {width: 800, height: 60}
+			}).add({
+			component: new HorizontalBar(),
+			position: {x: 10, y: l.region.length * 40 + 60},
+			size: {width: 800, height: 2}
 			})
 
          
@@ -51,7 +53,7 @@
 	 }
 
          function setup(){
-           createCanvas(900,600);
+           createCanvas(900,700);
            background(230);
            stroke(1)
          }

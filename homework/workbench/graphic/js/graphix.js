@@ -1,16 +1,13 @@
 class Heatmap{
-	constructor(rows, cols){
+	constructor(rows = 0, cols = 0){
 		this.rows = rows;
 		this.cols = cols;
 		this.data = {}
 	}
 
-	addScore(s){
-		s[0] = this.reference.indexOf(s[0])
-		let key = s[0] + "_" + s[1]
-		let score = s[s.length-1] * 100
-
-		this.data[key] = score
+	addScore(col, row, value){
+		let key = col + "_" + row
+		this.data[key] = value
 	}
 
 	getScore(col, row, defvalue = 0){
@@ -33,10 +30,24 @@ class Heatmap{
 			}
 	}
 
-	set(reference, rows){
-		this.reference = reference;
+	set(rows, cols){
 		this.rows = rows;
-		this.cols = this.reference.length
+		this.cols = cols
+	}
+}
+
+class HorizontalBar{
+	constructor( thickness = 2, r = 255, g = 0, b = 0){
+		this.thickness = thickness
+		this.color = [r,g,b]
+	}
+
+	update(x, y, size){
+		strokeWeight(this.thickness);
+		stroke(this.color[0], this.color[1], this.color[2])
+
+		line(x,y,x + size.width,y)
+
 	}
 }
 
@@ -148,6 +159,14 @@ class Bars{
 }
 
 
+class Cartesian{
+	constructor(){
+	}
+
+	update(x,y,size){
+	}
+
+}
 
 class Layout{
 	constructor(xo,yo, region){
@@ -158,7 +177,8 @@ class Layout{
 	}
 
 	add(c){
-		this.region.push(c)
+		this.region.push(c);
+		return this
 	}
 
 	update(){

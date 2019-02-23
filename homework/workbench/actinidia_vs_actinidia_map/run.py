@@ -19,7 +19,7 @@ hr_fsize = 40000
 
 report = 'report.map'
 
-computations = 400
+computations = 100
 
 # }
 
@@ -48,12 +48,12 @@ with open(hot_query_stairs,'w') as file:
 	for line in open(hot_query):
 		id, data = line.strip().split('\t')
 		file.write('{}\t{}\n'.format(id, stairify(data, zero, window_size) ))
-		print(id, data[:100], len(data))
+		print(id, data[:20], len(data))
 
 with open(hot_reference_stairs,'w') as file:
 	for i, f in fragments( open(hot_reference).read().strip(), hr_fsize ):
 		file.write('{}\t{}\n'.format(i, stairify(f, zero, window_size) ))
-		print(i, f[:100])
+		print(i, f[:20])
 
 # mapping
 os.system('./map.py {} {} {} {}'.format(hot_reference_stairs, hot_query_stairs, report, computations))

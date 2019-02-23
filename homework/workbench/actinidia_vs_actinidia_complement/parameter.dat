@@ -1,0 +1,16 @@
+zero = AC
+window_size = 512
+
+min_size = 2500
+
+margin = 15
+epsilon = 1.0
+
+sample_size = 4
+
+cutoff_factor = 1
+
+derivative_order = 2
+
+query = ../../../data/stage/query/actinidia_eriantha.fastq
+

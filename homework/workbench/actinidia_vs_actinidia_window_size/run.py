@@ -35,7 +35,7 @@ with open(outpath, 'w') as report:
 		mutant = mutation(sequence)
 
 
-		for i in range(256,321):
+		for i in range(1,321):
 			window_size_0 = 256
 			window_size_1 =  window_size_0 + i
 

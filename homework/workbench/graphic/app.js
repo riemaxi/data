@@ -13,7 +13,7 @@ function emitVectors(path, ev){
 
  var rd = readline.createInterface({
     input: fs.createReadStream(path),
-    output: process.stdout,
+    //output: process.stdout,
     console: false
  })
 
@@ -58,6 +58,10 @@ io.on("connection", (socket) => {
 	emitVectors("dalign.txt", 'dalign')
     })
 
+
+    socket.on('heatmap', () => {
+	emitVectors("heatmap.txt", 'heatmap')
+    })
 
 })
 

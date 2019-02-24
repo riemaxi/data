@@ -6,31 +6,65 @@ import cleanneedle as cn
 def string2stairs(seq, sep = ' '):
 	return [float(s) for s in seq.split(sep)]
 
-reference = sys.argv[1]
+reference_path = sys.argv[1]
 query = sys.argv[2]
 report = sys.argv[3]
-count = int(sys.argv[4])
+maxcount = int(sys.argv[4])
+maxgroups = 4
 
-al = cn.Aligner()
+top = 5
+maxscore = .3
 
-with open(report,'w', buffering = 1) as file:
-	for line in open(reference):
-		ri, r = line.strip().split('\t')
+al = cn.Aligner(cn.Setting(match_factor = 4))
 
-		for line in open(query):
-			qi, q = line.strip().split('\t')
+def alignqueries(maxcount, al):
+	reference = open(reference_path)
+	with open(report,'w', buffering = 1) as file:
 
-			print('aligning ...', ri, qi, len(r), len(q), sep = '\t')
+		groups = maxgroups
+		for line in reference:
+			ri, r = line.strip().split('\t')
 
-			for dr, dq, score in cn.Tool.topalignments(al.deployments(string2stairs(r), string2stairs(q))):
+			count = maxcount
+			for line in open(query):
+				qi, q = line.strip().split('\t')
 
-				file.write( '{}\t{}\n{}\n{}\n\n'.format( ri,qi, dr, dq, '{:0.2f}'.format(score) ) )
+				print('aligning ...', ri, qi, len(r), len(q), sep = '\t')
 
-				print(ri, qi, '{:0.2f}'.format(score) , flush = True, sep='\t')
+				for dr, dq, score in cn.Tool.topalignments(al.deployments(string2stairs(r), string2stairs(q), first = False), maxscore, top):
 
-				count -= 1
+					score = '{:0.4f}'.format(score) 
+					file.write( '{}\t{}\n{}\n{}\n{}\n\n'.format( ri,qi, dr, dq, score) )
 
-				if not count:
-					break
-		if not count:
-			break
+					print(ri, qi, score , flush = True, sep='\t')
+
+					count -= 1
+					if not count:
+						groups -= 1
+						if not groups:
+							return
+						else:
+							break
+
+def aligncontrols(al):
+	with open(report,'a', buffering = 1) as file:
+		id, data = next(open(reference_path)).strip().split('\t')
+
+		data = string2stairs(data)
+
+		ci = id
+		for i in range(10):
+			c = data[i:i-10]
+
+			print('aligning control ...', id, ci, len(data), len(c), sep = '\t')
+
+			for dr, dq, score in cn.Tool.topalignments(al.deployments(data, c, first = False), maxscore, top):
+
+				score = '{:0.2f}'.format(score)
+				file.write( '{}\t{}\n{}\n{}\n{}\n\n'.format( id,ci, dr, dq, score ) )
+
+				print(id, ci, score , flush = True, sep='\t')
+
+
+alignqueries(maxcount, al)
+aligncontrols(al)

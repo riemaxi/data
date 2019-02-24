@@ -168,20 +168,22 @@ class Aligner:
 
 	def setmatrix(self,seqa,seqb):
 		matrix = self.initmatrix(len(seqa), len(seqb))
+		gapping = 1
 		for row in range(len(seqa)):
 			for col in range(len(seqb)):
 				a,b = seqa[row], seqb[col]
 
-				matrix.set(row,col,max(	matrix.get(row-1,col-1) + self.score(a,b),
-							matrix.get(row-1,col) + self.gap_penalty,
-							matrix.get(row,col-1) + self.gap_penalty)
-						)
+				(score, gap) = max(	(matrix.get(row-1,col-1) + self.score(a,b),0),
+							(matrix.get(row-1,col) + gapping * self.gap_penalty,1),
+							(matrix.get(row,col-1) + gapping * self.gap_penalty,1))
 
+				matrix.set(row,col, score)
+				gapping = gapping + 1 if gap else 1
 
 		return matrix
 
 
-	def gaps(self, matrix, seqa, seqb, stack):
+	def allgaps(self, matrix, seqa, seqb, stack):
 		while len(stack):
 			gapsa, gapsb, row, col = stack.pop()
 
@@ -201,19 +203,41 @@ class Aligner:
 			else:
 				yield gapsa, gapsb
 
+	def gaps(self, matrix, seqa, seqb):
+		gapsa, gapsb = {}, {}
+		row, col = len(seqa) - 1, len(seqb) - 1
+		if row >= 0 and col >= 0:
+			_, (u,l) = max(	(matrix.get(row-1,col), (-1,0)),
+					(matrix.get(row, col-1), (0,-1)),
+					(matrix.get(row-1,col-1), (-1,-1))
+				)
 
-	def align(self, seqa, seqb):
+			(row, col) = (row + u, col + l)
+
+			if (u,l) == (0,-1):
+				gapsa = Tool.addgaps(gapsa, row)
+
+			if (u,l) == (-1,0):
+				gapsb = Tool.addgaps(gapsb, col)
+
+		yield gapsa, gapsb
+
+
+	def align(self, seqa, seqb, first = True):
 		matrix = self.setmatrix(seqa, seqb)
 
-		return self.gaps(matrix, seqa, seqb, [({},{}, len(seqa)-1, len(seqb)-1)])
+		if first:
+			return self.gaps(matrix, seqa, seqb)
+		else:
+			return self.allgaps(matrix, seqa, seqb, [({},{}, len(seqa)-1, len(seqb)-1)])
 
 	def totalscore(self, a, b, gapsymbol = '-', gapscore = 0.5):
 		v = [[0.0,1.0][self.equals(a[i],b[i])] if a[i] != gapsymbol and b[i] != gapsymbol else gapscore for i in range( min( len(a),len(b) ) )]
 
 		return sum(v)/len(v)
 
-	def deployments(self, a,b,gapsymbol='_____'):
-		for gapsa, gapsb in self.align(a,b):
+	def deployments(self, a,b,first = True, gapsymbol='_____'):
+		for gapsa, gapsb in self.align(a,b, first):
 			da, db = Tool.deployalignment(a,gapsa,b,gapsb,gapsymbol)
 			yield da, db , self.totalscore(da,db,gapsymbol)
 

@@ -1,21 +1,28 @@
 class Heatmap{
-	constructor(rows = 0, cols = 0){
-		this.rows = rows;
-		this.cols = cols;
+	constructor(){
+		this.rows = 0;
+		this.cols = 0;
 		this.data = {}
+	
+		this.stroke = 255
 	}
 
 	addScore(col, row, value){
-		let key = col + "_" + row
-		this.data[key] = value
+		if (this.data[row] == null)
+			this.data[row] = {}
+
+		this.data[row][col] = value
+
+		this.cols = max(this.cols, col + 1)
+		this.rows = max(this.rows, row + 1)
 	}
 
 	getScore(col, row, defvalue = 0){
-		let score = this.data[col + "_" + row]
-		return score != null?score : defvalue
+		return this.data[row][col] != null ? this.data[row][col] : defvalue
 	}
 
 	update(x, y, size){
+		stroke(this.stroke)
 		for (let row = 0; row < this.rows; row++)
 			for (let col = 0; col < this.cols; col++){
 				let c1 = map(col,0,this.cols-1, x, x + size.width);
@@ -30,10 +37,6 @@ class Heatmap{
 			}
 	}
 
-	set(rows, cols){
-		this.rows = rows;
-		this.cols = cols
-	}
 }
 
 class HorizontalBar{

@@ -6,25 +6,63 @@ import clearwater as cw
 def string2stairs(seq, sep = ' '):
 	return [float(s) for s in seq.split(sep)]
 
-reference = sys.argv[1]
+reference_path = sys.argv[1]
 query = sys.argv[2]
 report = sys.argv[3]
-count = int(sys.argv[4])
+groupcount = int(sys.argv[4])
+
+maxgroups = 16
+
+reference = open(reference_path)
 
 mapper = cw.Warmmapper()
 
-with open(report,'w', buffering = 1) as file:
-	for line in open(reference):
-		ri, r = line.strip().split('\t')
+def mapqueries(groupcount, mapper):
+	with open(report,'w') as file:
+		groups = maxgroups
+		for line in reference:
+			ri, r = line.strip().split('\t')
+			r = string2stairs(r)
+			count = groupcount
 
-		for line in open(query):
-			qi, q = line.strip().split('\t')
+			for line in open(query):
+				qi, q = line.strip().split('\t')
+				q = string2stairs(q)
 
-			print('mapping ...', ri, qi, len(r), len(q), sep = '\t')
+				print('mapping ...', maxgroups - groups, groupcount - count, len(r), len(q), sep = '\t')
 
-			count -= 1
+				(scr,(rstart,rend),(qstart,qend), cnt),_ = mapper.map(r,q)
 
-			if not count:
-				break
-		if not count:
-			break
+				record = '{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(maxgroups - groups, groupcount - count, cnt, rstart, rend, qstart, qend, '{:0.5f}'.format(scr))
+				file.write(record)
+
+
+				count -= 1
+
+				if not count:
+					groups -= 1
+					if not groups:
+						return
+					else:
+						break
+
+def mapcontrols(groupcount, mapper):
+	with open(report,'a') as file:
+		_, data = next(open(reference_path)).strip().split('\t')
+
+		data = string2stairs(data)
+
+		id = maxgroups
+		for i in range(2):
+			c = data[i:i-2]
+
+			print('mapping control ...', id, groupcount + i, len(data), len(c), sep = '\t')
+
+			(scr,(rstart,rend),(qstart,qend), cnt),_ = mapper.map(data,c)
+
+			record = '{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(id, groupcount + i, cnt, rstart, rend, qstart, qend, '{:0.5f}'.format(scr))
+			file.write(record)
+
+
+mapqueries(groupcount, mapper)
+mapcontrols(groupcount, mapper)

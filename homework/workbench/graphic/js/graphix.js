@@ -171,6 +171,47 @@ class Cartesian{
 
 }
 
+class Gradient{
+	constructor(minv = 0, maxv = 100){
+		this.minv = minv
+		this.maxv = maxv
+	}
+
+	draw(x, y, w, h, c1, c2, axis = 2) {
+		noFill();
+
+		if (axis === 1) { // y axis
+			// Top to bottom gradient
+			for (let i = y; i <= y + h; i++) {
+				let inter = map(i, y, y + h, 0, 1);
+				let c = lerpColor(c1, c2, inter);
+				stroke(c);
+				line(x, i, x + w, i);
+			}
+		} else if (axis === 2) { //X axis
+			// Left to right gradient
+			for (let i = x; i <= x + w; i++) {
+				let inter = map(i, x, x + w, 0, 1);
+				let c = lerpColor(c1, c2, inter);
+				stroke(c);
+				line(i, y, i, y + h);
+			}
+		}
+	}
+
+	set(minv, maxv){
+		this.minv = minv
+		this.maxv = maxv
+	}
+
+	update(x, y, size){
+		let bottomcolor = color(map(this.minv,0,100,0,255))
+		let topcolor = color(map(this.maxv,0,100, 0, 255))
+
+		this.draw(x, y, size.width, size.height, topcolor, bottomcolor) 
+	}
+}
+
 class Layout{
 	constructor(xo,yo, region){
 		this.region = region != null ? region : []

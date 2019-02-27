@@ -34,6 +34,7 @@ app.get("/vector", (req, res) => res.sendFile(__dirname + "/vector.html"))
 app.get("/stairs", (req, res) => res.sendFile(__dirname + "/stairs.html"))
 app.get("/alignment", (req, res) => res.sendFile(__dirname + "/alignment.html"))
 app.get("/dalignment", (req, res) => res.sendFile(__dirname + "/dalignment.html"))
+app.get("/heatmap", (req, res) => res.sendFile(__dirname + "/heatmap.html"))
 
 app.post('/message', (req, res) => {
     io.emit('message', req.body)

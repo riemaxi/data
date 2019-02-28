@@ -1,9 +1,52 @@
-class Heatmap{
+class Component{
 	constructor(){
+		this.mousein = false
+	}
+
+	update(x,y,size){
+		let mousein = mouseX > x && mouseX < x + size.width && mouseY > y && mouseY < y + size.height
+		if (this.mousein && !mousein)
+			this.mouseLeave({x: mouseX, y: mouseY})
+
+		if (this.mousein && mousein)
+			this.mouseMove({x: mouseX, y: mouseY})
+
+
+		if (!this.mousein && mousein)
+			this.mouseEnter({x: mouseX, y: mouseY})
+
+		this.mousein = mousein
+
+	}
+
+	drawCursor(x,y){}
+
+	mouseLeave(ev){}
+	mouseEnter(ev){}
+	mouseMove(ev){
+		this.drawCursor(ev.x, ev.y)
+	}
+
+	mousePressed(){
+		if (this.mousein)
+			this.mouseDown(mouseX, mouseY)
+	}
+
+	mouseRelease(){
+		if (this.mousein)
+			this.mouseUp(mouseX, mouseY)
+	}
+
+}
+
+class Heatmap extends Component{
+	constructor(){
+		super()
+
 		this.rows = 0;
 		this.cols = 0;
 		this.data = {}
-	
+
 		this.stroke = 255
 	}
 
@@ -22,13 +65,19 @@ class Heatmap{
 	}
 
 	update(x, y, size){
+		this.draw(x, y, x + size.width, y + size.height)
+		super.update(x,y,size)
+
+	}
+
+	draw(x1,y1, x2,y2){
 		stroke(this.stroke)
 		for (let row = 0; row < this.rows; row++)
 			for (let col = 0; col < this.cols; col++){
-				let c1 = map(col,0,this.cols-1, x, x + size.width);
-				let r1 = map(row,0,this.rows-1, y, y + size.height);
-				let c2 = map(col+1,0,this.cols-1, x, x +  size.width);
-				let r2 = map(row+1,0,this.rows-1, y, y + size.height);
+				let c1 = map(col,0,this.cols-1, x1, x2);
+				let r1 = map(row,0,this.rows-1, y1, y2);
+				let c2 = map(col+1,0,this.cols-1, x1, x2);
+				let r2 = map(row+1,0,this.rows-1, y1, y2);
 
 				let color = map(this.getScore(col, row), 0, 100, 255, 0);
 
@@ -36,6 +85,9 @@ class Heatmap{
 				rect(c1, r1, c2-c1,r2 - r1);
 			}
 	}
+
+	// Event handler
+	
 
 }
 
@@ -177,27 +229,7 @@ class Gradient{
 		this.maxv = maxv
 	}
 
-	draw(x, y, w, h, c1, c2, axis = 2) {
-		noFill();
-
-		if (axis === 1) { // y axis
-			// Top to bottom gradient
-			for (let i = y; i <= y + h; i++) {
-				let inter = map(i, y, y + h, 0, 1);
-				let c = lerpColor(c1, c2, inter);
-				stroke(c);
-				line(x, i, x + w, i);
-			}
-		} else if (axis === 2) { //X axis
-			// Left to right gradient
-			for (let i = x; i <= x + w; i++) {
-				let inter = map(i, x, x + w, 0, 1);
-				let c = lerpColor(c1, c2, inter);
-				stroke(c);
-				line(i, y, i, y + h);
-			}
-		}
-	}
+	draw(x, y, w, h, c1, c2, axis = 2) {}
 
 	set(minv, maxv){
 		this.minv = minv
@@ -208,7 +240,33 @@ class Gradient{
 		let bottomcolor = color(map(this.minv,0,100,0,255))
 		let topcolor = color(map(this.maxv,0,100, 0, 255))
 
+		noFill();
+
 		this.draw(x, y, size.width, size.height, topcolor, bottomcolor) 
+	}
+}
+
+class HGradient extends Gradient{
+	draw(x, y, w, h, c1, c2){
+		for (let i = x; i <= x + w; i++) {
+			let inter = map(i, x, x + w, 0, 1);
+			let c = lerpColor(c1, c2, inter);
+			stroke(c);
+			line(i, y, i, y + h);
+		}
+
+	}
+}
+
+class VGradient extends Gradient{
+	draw(x, y, w, h, c1, c2){
+		for (let i = y; i <= y + h; i++) {
+			let inter = map(i, y, y + h, 0, 1);
+			let c = lerpColor(c1, c2, inter);
+			stroke(c);
+			line(x, i, x + w, i);
+		}
+
 	}
 }
 
